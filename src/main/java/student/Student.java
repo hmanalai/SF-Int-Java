@@ -66,4 +66,6 @@ Lab 2 suggestions (ideally, do what interests you!!!)
 - make your Student immutable :)
 - if you didn't complete "print all students & print smart students"
   maybe do that now
+
+  "Spaced Repetition"
  */
