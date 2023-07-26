@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Student {
+public final class Student {
   // let's make this immutable... (using final fields is likely smart anyway)
   private /*final*/ String name;
   private double gpa;
@@ -58,3 +58,12 @@ public class Student {
       '}';
   }
 }
+
+/*
+Lab 2 suggestions (ideally, do what interests you!!!)
+- make a factory (or builder if you're up for it!) and prevent
+  use of constructor by clients
+- make your Student immutable :)
+- if you didn't complete "print all students & print smart students"
+  maybe do that now
+ */
