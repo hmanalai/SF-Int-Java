@@ -13,6 +13,13 @@ public final class Student {
   // go with Set, to prevent duplicates
   private Set<String> courses;
 
+  private Student(String name, double gpa, Set<String> courses) {
+    this.name = name;
+    this.gpa = gpa;
+    this.courses = courses;
+  }
+
+/*
   // mutable objects provided by a caller are not safe for us to use!!!
   public Student(String name, double gpa, Set<String> courses) {
     this.name = name;
@@ -32,6 +39,50 @@ public final class Student {
     // still vulnerable to caller provided structure being changed
 //    this.courses = Collections.unmodifiableSet(courses);
   }
+*/
+
+  public static class Builder {
+    private Student target = new Student();
+    { target.courses = new HashSet<>(); }
+    private Builder() {}
+
+    public Builder name(String n) {
+      target.name = n;
+      return this;
+    }
+
+    public Builder gpa(double gpa) {
+      target.gpa = gpa;
+      return this;
+    }
+
+    public Builder course(String c) {
+      target.courses.add(c);
+      return this;
+    }
+
+    public Student build() {
+      // validate!!!
+      if (!Student.isValid(target.name, target.gpa)) {
+        throw new IllegalArgumentException();
+      }
+      Student result = target;
+      target = new Student();
+      return result;
+    }
+  }
+
+  public static boolean isValid(String name, double gpa) {
+    return name != null && name.length() > 0
+      && gpa >= 0 && gpa <= 5.0;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  private Student() {
+  }
 
   public String getName() {
     return name;
@@ -47,6 +98,18 @@ public final class Student {
     return courses; // OK if our courses is immutable, e.g. Set.of..
     // wrap for the caller, but allow ourselves to change it?
 //    return Collections.unmodifiableSet(courses);
+  }
+
+  // NO NO NO!!! we want immutability
+//  public void addCourse(String course) {
+//    courses.add(course);
+//  }
+
+  public Student withCourse(String c) {
+    Set<String> newCourses = new HashSet<>(courses);
+    newCourses.add(c);
+    return new Student(this.name, this.gpa,
+      Collections.unmodifiableSet(newCourses));
   }
 
   @Override
