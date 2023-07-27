@@ -1,10 +1,12 @@
 package student;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 interface IsThisStudentInteresting {
   boolean test(Student s);
+//  void doStuff();
 }
 
 class SmartStudent implements IsThisStudentInteresting {
@@ -95,7 +97,7 @@ public class School {
     return res;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Throwable {
     List<Student> school = List.of(
       Student.builder()
         .name("Fred").gpa(3.2).course("Math").course("Physics")
@@ -125,5 +127,80 @@ public class School {
 //    showAll(getEnthusiastic(school, 3));
     showAll(getInteresting(school, new EnthusiasticStudent()));
     System.out.println("-------------------------");
+
+
+    // ??? must be an object (in Java at least)
+    // and must implement the IsThisStudentInteresting interface!!!
+    // Further -- that interface declares EXACTLY ONE abstract method
+    // -- and the compiler KNOWS the exact format of that method (arg types
+    //    and return type.
+    // SO, IF (but only if) we are ONLY interested in providing an implementation
+    // of that one abtract method, we could have a syntax that simplifies the
+    // situation...
+    // compiler can construct a class from our method (implementing the
+    // interface) and then instantiate it :)
+    // must give "permission" to do this, using the arrow
+    // NOTE, the lambda in Java is an OBJECT expression IF but only if
+    // the context defines an interface according to the above rules
+    showAll(getInteresting(school,
+/*     new IsThisStudentInteresting() {
+      public boolean test*/(Student s) -> { // must be intended to be "test"
+        return s.getCourses().size() > 3;
+      }
+    /*}*/
+      ));
+    System.out.println("-------------------------");
+    // context can be assignment, function argument, function return,
+    // or a cast (which is odd!)
+//    Object aTest = (IsThisStudentInteresting)(Student s) -> {
+//      return s.getCourses().size() > 3;
+//    };
+    // multiple arguments must all be handled "the same"
+    // if inferrable, can leave out the type, or can use var
+//    IsThisStudentInteresting aTest = (s) -> {
+//    IsThisStudentInteresting aTest = (@Deprecated var s) -> {
+//      return s.getCourses().size() > 3;
+//    };
+
+    // parens optional ONLY for a single, not type specifier, formal param
+//    IsThisStudentInteresting aTest = s -> {
+//      return s.getCourses().size() > 3;
+//    };
+
+    // IF, but only if, body is curly, return, expression, semicolon, curly
+    // you can leave out everything except the expression
+    IsThisStudentInteresting aTest = s -> s.getCourses().size() > 3  ;
+
+    // Lambdas do NOTHING (functionally) that we can't do any other way
+    // BUT, they might provide better readability, partly through brevity
+    // more importantly (generally) it can put self-documenting behavior
+    // in the place where it interests you.
+
+    showAll(getInteresting(school, s -> s.getCourses().size() > 3 ));
+
+
+
+    System.out.println(aTest.getClass().getName());
+    Class<?> cl = aTest.getClass();
+    Method [] methods = cl.getMethods();
+    for (Method m : methods) {
+      System.out.println(m);
+    }
+    Method testIt = aTest.getClass().getMethod("test", Student.class);
+    System.out.println(testIt.invoke(aTest, school.get(2)));
   }
 }
+
+/*
+write code -- of your own choosing ideally
+-- create/improve a section method (not using stream, but build
+something on the lines of my getInteresting method
+-- define an interface like "isinteresting" and implement using
+lambdas
+
+Or, if you used streams but aren't totally comfortable with lambdas
+maybe play with a variety of lambda formats (note, the interface used
+by streams is "Predicate<T>" not "is interesting..." but it behaves
+the same
+
+ */
