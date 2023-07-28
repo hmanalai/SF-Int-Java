@@ -90,6 +90,7 @@ public class School {
 
     List<Student> res = new ArrayList<>();
     for (Student s : ls) {
+      // NOT a "function literal", if it were, you'd simply say "criterion(s)"
       if (criterion.test(s)) {
         res.add(s);
       }

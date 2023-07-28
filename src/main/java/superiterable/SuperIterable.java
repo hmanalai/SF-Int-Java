@@ -32,6 +32,8 @@ public class SuperIterable<E> implements Iterable<E> {
     return new SuperIterable<>(results);
   }
 
+  // Bucket o'items with a map method like this
+  // it's called a "Functor"
   public <F> SuperIterable<F> map(
     //                         contravariance covariance
     SuperIterable<E> this, Function<? super E, ? extends F> op) {
@@ -42,6 +44,8 @@ public class SuperIterable<E> implements Iterable<E> {
     return new SuperIterable<>(res);
   }
 
+  // if you have a Bucket o'items which has a flatmap like this
+  // it's called a "Monad"
   public <F> SuperIterable<F> flatMap(
     SuperIterable<E> this, Function<E, SuperIterable<F>> op) {
     List<F> res = new ArrayList<>();
