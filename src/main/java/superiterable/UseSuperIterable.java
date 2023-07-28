@@ -46,9 +46,56 @@ public class UseSuperIterable {
 
     System.out.println("--------------------------");
     school.stream()
-      .filter(s -> s.getGpa() < 3.6)
+//      .filter(s -> s.getGpa() < 3.6)
       .flatMap(s -> s.getCourses().stream())
 //      .map(s -> s.getCourses())
       .forEach(s -> System.out.println("course: " + s));
+    System.out.println("Lab 1: --------------------------");
+    school.stream()
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 2: --------------------------");
+    school.stream()
+      .filter(s -> s.getGpa() > 3)
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 3: --------------------------");
+    school.stream()
+      .filter(s -> s.getGpa() <= 3)
+      .map(s -> s.getName() + " has grade " + s.getGpa())
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 4: --------------------------");
+    school.stream()
+      .filter(s -> s.getCourses().size() > 2)
+      .map(s -> s.getName() + " takes " + s.getCourses().size() + " courses")
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 5: --------------------------");
+    school.stream()
+      .flatMap(s -> s.getCourses().stream())
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 6: --------------------------");
+    school.stream()
+      .flatMap(s -> s.getCourses().stream())
+      .distinct()
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 7: --------------------------");
+    school.stream()
+      .flatMap(s -> s.getCourses().stream())
+      .distinct()
+      .sorted()
+      .forEach(s -> System.out.println(s));
+
+    System.out.println("Lab 8: --------------------------");
+    school.stream()
+//      .flatMap((Student s) -> {
+//        return s.getCourses().stream().map(c -> s.getName() + " takes " + c);
+//      })
+      .flatMap(s -> s.getCourses().stream().map(c -> s.getName() + " takes " + c))
+      .forEach(s -> System.out.println(s));
+
   }
 }
