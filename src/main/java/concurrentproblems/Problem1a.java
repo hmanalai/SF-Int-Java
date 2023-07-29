@@ -1,20 +1,34 @@
 package concurrentproblems;
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAccumulator;
+import java.util.concurrent.locks.ReentrantLock;
+
 class MyCounter implements Runnable {
   private Object rendezvous = new Object();
-  private /*volatile*/ long counter = 0;
+//  ReentrantLock lock = new ReentrantLock();
+//  AtomicLong counter = new AtomicLong();
+  LongAccumulator counter = new LongAccumulator((a, b) -> a + b, 1L);
+//  private /*volatile*/ long counter = 0;
   @Override
   public void run() {
-    for (int i = 0; i < 1_000_000_000; i++) {
-      synchronized (rendezvous) { // mutual exclusion when used correctly
-        counter++;
-      }
+    for (int i = 0; i < 100_000_000; i++) {
+//      counter.getAndIncrement();
+      counter.accumulate(1);
+//      synchronized (rendezvous) { // mutual exclusion when used correctly
+//      lock.lock();
+//      try {
+//        counter++;
+//      } finally {
+//        lock.unlock();
+//      }
     }
     System.out.println("finishing");
   }
 
   public long getCounter() {
-    return counter;
+//    return counter;
+    return counter.get();
   }
 }
 
